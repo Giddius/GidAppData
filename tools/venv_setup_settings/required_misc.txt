@@ -1,0 +1,15 @@
+Jinja2
+pyperclip
+requests
+natsort
+beautifulsoup4
+pdfkit
+checksumdir
+click
+marshmallow
+regex
+parce
+jsonpickle
+fuzzywuzzy
+fuzzysearch
+python-Levenshtein

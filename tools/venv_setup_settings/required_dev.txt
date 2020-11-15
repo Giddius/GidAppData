@@ -1,0 +1,10 @@
+https://github.com/pyinstaller/pyinstaller/tarball/develop
+pep517
+nuitka
+memory-profiler
+matplotlib
+import-profiler
+objectgraph
+pipreqs
+pydeps
+numpy==1.19.3

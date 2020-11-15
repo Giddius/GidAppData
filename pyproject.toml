@@ -1,0 +1,21 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "gidconfig"
+author = "Giddius"
+home-page = "https://github.com/Giddius/Gidconfig"
+classifiers = ["License :: OSI Approved :: MIT License"]
+description-file = "readme.md"
+requires = [
+"pytoml>=0.1.21",
+"fuzzywuzzy>=0.18.0",
+"gidlogger>=0.1.2"
+]
+
+
+
+
+[tool.flit.scripts]
+

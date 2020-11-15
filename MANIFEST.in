@@ -1,0 +1,3 @@
+graft Gidconfig
+include LICENSE
+include readme.md
