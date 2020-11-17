@@ -1,0 +1,2 @@
+class GidAppDataBaseException(Exception):
+    pass

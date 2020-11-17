@@ -9,7 +9,7 @@ import os
 GIDCONFIG_AUTHOR = ['Giddius']
 GIDCONFIG_SHORT_DESCRIPTION = 'WiP'
 GIDCONFIG_LONG_DESCRIPTION_FILE = 'README.md'
-GIDCONFIG_VERSION = "0.1.0"
+GIDCONFIG_VERSION = "0.1"
 GIDCONFIG_LICENSE = 'MIT'
 GIDCONFIG_ENTRY_POINTS = {}
 GIDCONFIG_URL = ''
@@ -70,7 +70,7 @@ def get_entry_points():
     return GIDCONFIG_ENTRY_POINTS
 
 
-setup(name='gidconfig',
+setup(name='gidappdata',
       version=get_version(),
       description=get_short_description(),
       long_description=get_long_description(),

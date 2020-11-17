@@ -1,1 +1,2 @@
 D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\gidlogger_rep,gidlogger
+D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\Gidconfig,gidconfig
