@@ -14,4 +14,4 @@ requires = []
 
 
 [tool.flit.scripts]
-
+apdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:folder_to_pybin"

@@ -10,12 +10,12 @@ import base64
 
 import gidlogger as glog
 from gidconfig.standard import ConfigRental
-from gidappdata.standard_appdata.appdata_storager import AppDataStorageUtility
+from gidappdata.standard_appdata.appdata_storager import AppDataStorager
 from gidappdata.utility.functions import pathmaker
 
 # endregion [Imports]
 
-__updated__ = '2020-11-17 11:57:33'
+__updated__ = '2020-11-23 19:37:48'
 
 # region [Logging]
 
@@ -65,7 +65,7 @@ class AppdataProvider:
     @classmethod
     def setup_appdata(cls, author_name: str, app_name: str, folderlist: list = None, filelist: list = None, configs: dict = None, dev=None, redirect=None):
         if cls.handler is None:
-            cls.handler = AppDataStorageUtility(author_name, app_name, dev, redirect)
+            cls.handler = AppDataStorager(author_name, app_name, dev, redirect)
         if folderlist is not None:
             for _item in folderlist:
                 if isinstance(_item, str):
@@ -105,7 +105,7 @@ class AppdataProvider:
 
         if cls.handler is None:
             log.info("appdata, does not exist, creating from scratch")
-            cls.handler = AppDataStorageUtility(author_name, app_name, dev, redirect)
+            cls.handler = AppDataStorager(author_name, app_name, dev, redirect)
             _archive = cls.archive_from_bin(in_archive, uses_base64=uses_base64)
             cls.unpack_archive(_archive, clean=clean)
             ConfigRental.set_appdata(cls.handler)

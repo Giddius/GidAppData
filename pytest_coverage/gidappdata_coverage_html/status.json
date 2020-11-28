@@ -1,0 +1,119 @@
+{
+    "format": 2,
+    "version": "5.3",
+    "globals": "75fc9b7203e39568cd8278b112261154",
+    "files": {
+        "gidappdata___init___py": {
+            "hash": "029c66734bafeb4a6537b546e6c00761",
+            "index": {
+                "nums": [1, 2, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata___init___py.html",
+                "relative_filename": "gidappdata\\__init__.py"
+            }
+        },
+        "gidappdata_cli___init___py": {
+            "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+            "index": {
+                "nums": [1, 0, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata_cli___init___py.html",
+                "relative_filename": "gidappdata\\cli\\__init__.py"
+            }
+        },
+        "gidappdata_cli_create_datapack_skeleton_py": {
+            "hash": "f6a5d532ca40c9e7df9ced232b5422c3",
+            "index": {
+                "nums": [1, 7, 0, 7, 0, 0, 0],
+                "html_filename": "gidappdata_cli_create_datapack_skeleton_py.html",
+                "relative_filename": "gidappdata\\cli\\create_datapack_skeleton.py"
+            }
+        },
+        "gidappdata_cli_pack_and_bin_and_py_data_py": {
+            "hash": "1d3caa3398573926b43bbfb77f347029",
+            "index": {
+                "nums": [1, 76, 0, 76, 0, 0, 0],
+                "html_filename": "gidappdata_cli_pack_and_bin_and_py_data_py.html",
+                "relative_filename": "gidappdata\\cli\\pack_and_bin_and_py_data.py"
+            }
+        },
+        "gidappdata_cli_skeleton_tree_py": {
+            "hash": "3b7223d986c425bb41622db9d4c4c846",
+            "index": {
+                "nums": [1, 96, 0, 19, 0, 0, 0],
+                "html_filename": "gidappdata_cli_skeleton_tree_py.html",
+                "relative_filename": "gidappdata\\cli\\skeleton_tree.py"
+            }
+        },
+        "gidappdata_data___init___py": {
+            "hash": "8f59a7e9210db62370cd600c1c607645",
+            "index": {
+                "nums": [1, 0, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata_data___init___py.html",
+                "relative_filename": "gidappdata\\data\\__init__.py"
+            }
+        },
+        "gidappdata_data_data_pack_skeleton_data_py": {
+            "hash": "4ea52bab1a45723d2e1f1037e99f6715",
+            "index": {
+                "nums": [1, 11, 0, 11, 0, 0, 0],
+                "html_filename": "gidappdata_data_data_pack_skeleton_data_py.html",
+                "relative_filename": "gidappdata\\data\\data_pack_skeleton_data.py"
+            }
+        },
+        "gidappdata_standard_appdata___init___py": {
+            "hash": "6482c36274d54a2d4841753ec25d49c2",
+            "index": {
+                "nums": [1, 1, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata_standard_appdata___init___py.html",
+                "relative_filename": "gidappdata\\standard_appdata\\__init__.py"
+            }
+        },
+        "gidappdata_standard_appdata_appdata_provider_py": {
+            "hash": "ef4841d303789ae71d4d14e333b38eda",
+            "index": {
+                "nums": [1, 79, 0, 79, 0, 0, 0],
+                "html_filename": "gidappdata_standard_appdata_appdata_provider_py.html",
+                "relative_filename": "gidappdata\\standard_appdata\\appdata_provider.py"
+            }
+        },
+        "gidappdata_standard_appdata_appdata_storager_py": {
+            "hash": "23eda53479d3c38162818557ad93b02f",
+            "index": {
+                "nums": [1, 95, 0, 95, 0, 0, 0],
+                "html_filename": "gidappdata_standard_appdata_appdata_storager_py.html",
+                "relative_filename": "gidappdata\\standard_appdata\\appdata_storager.py"
+            }
+        },
+        "gidappdata_utility___init___py": {
+            "hash": "4a75a130fbaaac36c56194a92240a7f3",
+            "index": {
+                "nums": [1, 1, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata_utility___init___py.html",
+                "relative_filename": "gidappdata\\utility\\__init__.py"
+            }
+        },
+        "gidappdata_utility_exceptions_py": {
+            "hash": "03792421ac3e210367fe54c4c17e5810",
+            "index": {
+                "nums": [1, 2, 0, 2, 0, 0, 0],
+                "html_filename": "gidappdata_utility_exceptions_py.html",
+                "relative_filename": "gidappdata\\utility\\exceptions.py"
+            }
+        },
+        "gidappdata_utility_functions_py": {
+            "hash": "22586199982ba18f24afd0fae9dc5186",
+            "index": {
+                "nums": [1, 76, 0, 28, 0, 0, 0],
+                "html_filename": "gidappdata_utility_functions_py.html",
+                "relative_filename": "gidappdata\\utility\\functions.py"
+            }
+        },
+        "gidappdata_utility_misc_py": {
+            "hash": "8f59a7e9210db62370cd600c1c607645",
+            "index": {
+                "nums": [1, 0, 0, 0, 0, 0, 0],
+                "html_filename": "gidappdata_utility_misc_py.html",
+                "relative_filename": "gidappdata\\utility\\misc.py"
+            }
+        }
+    }
+}

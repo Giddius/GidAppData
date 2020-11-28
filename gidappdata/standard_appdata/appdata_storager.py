@@ -2,10 +2,10 @@
 
 
 from pprint import pformat
-
+from enum import Enum, auto
 import os
 import sys
-
+import shutil
 
 from gidappdata.utility.functions import appendwriteit, linereadit, pathmaker, readit, writeit, writejson, loadjson
 
@@ -15,7 +15,7 @@ import appdirs
 
 # endregion [Imports]
 
-__updated__ = '2020-11-17 11:37:56'
+__updated__ = '2020-11-27 18:38:31'
 
 
 # region [Logging]
@@ -43,77 +43,56 @@ log.info(glog.imported(__name__))
 
 # endregion [Global_Functions]
 
-
-# region [Class_1]
-
-# endregion [Class_1]
+class _AppDataFolder(Enum):
+    AllFolder = auto()
+    LogFolder = "log_folder"
+    AppStorageFolder = "appstorage_folder"
 
 
 # region [Class_2]
 
+
 class AppDataStorager:
+    AllFolder = _AppDataFolder.AllFolder
+    LogFolder = _AppDataFolder.LogFolder
+    AppStorageFolder = _AppDataFolder.AppStorageFolder
+
     def __init__(self, author_name: str, app_name: str, dev: str = None, redirect=None):
         # sourcery skip: simplify-boolean-comparison
         self.dev = dev
         self.author_name = author_name
         self.app_name = app_name
         self.redirect = redirect
+        self.managed_folder = []
         self._manipulate_enviroment(redirect)
         self.operating_system = sys.platform
-        self.general_data_folder = None if self.dev is None else os.path.split(self.dev)[0]
         self.appstorage_folder = None if self.dev is None else self.dev
         self.log_folder = None if self.dev is None else pathmaker(self.dev, 'Logs')
         if self.dev is None:
             self.setup_app_storage_base()
-            self.find_general_data_folder()
 
     def _manipulate_enviroment(self, redirect):
         if redirect is not None:
             os.environ['APPDATA'] = redirect
 
     def setup_app_storage_base(self):
-        self.find_general_data_folder()
         self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name, appname=self.app_name, roaming=True))
+        self.managed_folder.append(self.appstorage_folder)
         if os.path.isdir(self.appstorage_folder) is False:
             os.makedirs(self.appstorage_folder)
+
         self.log_folder = pathmaker(appdirs.user_log_dir(appauthor=self.author_name, appname=self.app_name, opinion=True))
+        self.managed_folder.append(self.log_folder)
         if os.path.isdir(self.log_folder) is False:
             os.makedirs(self.log_folder)
-
-    def find_general_data_folder(self):
-        if self.redirect is not None:
-            self.general_data_folder = pathmaker(self.redirect)
-        else:
-            self.general_data_folder = pathmaker(appdirs.user_data_dir(roaming=True))
 
     def add_folder(self, folder_name, parent_folder=None):
         if parent_folder is None:
             _folder = pathmaker(self.appstorage_folder, folder_name)
         else:
-            _folder = pathmaker(self.appstorage_folder, parent_folder, folder_name)
+            _folder = pathmaker(self[parent_folder], folder_name)
         if os.path.isdir(_folder) is False:
             os.makedirs(_folder)
-
-    def write(self, filename, filecontent, folder=None, append=False, overwrite=False):
-        _path = self._get_filepath(filename, folder)
-        if append is False:
-            if os.path.isfile(_path) is False or overwrite is True:
-                writeit(_path, filecontent)
-        elif append is True:
-            appendwriteit(_path, filecontent)
-
-    def read(self, filename, folder=None, perline=False):
-        _path = self._get_filepath(filename, folder)
-        return linereadit(_path) if perline is True else readit(_path)
-
-    def write_json(self, filename, data, folder=None, overwrite=False, **kwargs):
-        _path = self._get_filepath(filename, folder)
-        if os.path.isfile(_path) is False or overwrite is True:
-            writejson(data, _path, **kwargs)
-
-    def load_json(self, filename, folder=None):
-        _path = self._get_filepath(filename, folder)
-        return loadjson(_path)
 
     def copy_file(self, source, target_filename, folder=None, overwrite=False):
         _path = self._get_filepath(target_filename, folder)
@@ -122,10 +101,9 @@ class AppDataStorager:
 
     def _get_filepath(self, filename, folder):
         if folder is not None:
-            _path = pathmaker(self.folder[folder], filename)
+            return pathmaker(self.folder[folder], filename)
         else:
-            _path = pathmaker(self.appstorage_folder, filename)
-        return _path
+            return pathmaker(self.appstorage_folder, filename)
 
     def __getitem__(self, key):
         _out = None
@@ -151,8 +129,29 @@ class AppDataStorager:
                 _out[_file] = pathmaker(dirname, _file)
         return _out
 
+    def _get_app_base_folder(self, in_folder):
+        _folder = in_folder
+        while os.path.basename(_folder) != self.author_name:
+            _folder = _folder.rsplit('/', 1)[0]
+        return _folder
+
+    def clean(self, folder_to_clean: _AppDataFolder):
+        _to_delete = []
+        if folder_to_clean is self.AllFolder:
+            _to_delete = self.managed_folder
+        else:
+            _to_delete.append(getattr(self, folder_to_clean.value))
+
+        for _folder in _to_delete:
+            _base_folder = self._get_app_base_folder(_folder)
+            shutil.rmtree(_base_folder)
+            log.info('deleted appdata folder "%s"', _base_folder)
+
     def __str__(self):
         return self.appstorage_folder
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.author_name}, {self.app_name}, {str(self.dev)}, {str(self.redirect)})"
 
 # endregion [Class_2]
 
@@ -160,5 +159,4 @@ class AppDataStorager:
 # region [Main_Exec]
 if __name__ == '__main__':
     pass
-
 # endregion [Main_Exec]

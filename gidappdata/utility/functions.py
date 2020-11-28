@@ -8,10 +8,12 @@ import shutil
 import pickle
 # * Gid Imports -->
 import gidlogger as glog
-
+from functools import partial
+import base64
+import numpy as np
 # endregion[Imports]
 
-__updated__ = '2020-11-17 12:52:54'
+__updated__ = '2020-11-23 21:02:41'
 
 
 # region [Logging]
@@ -131,7 +133,7 @@ def readbin(in_file):
         return binaryfile.read()
 
 
-def readit(in_file, per_lines=False, in_encoding='utf-8', in_errors=None):
+def readit(in_file, per_lines=False, in_encoding='utf-8', in_errors='replace'):
     """
     Reads a file.
 
@@ -227,7 +229,32 @@ def get_pickled(in_path):
         return pickle.load(pickletoretrieve)
 
 
+def np_readbin(in_path):
+    return np.frombuffer(readbin(in_path))
+
+
+def read_file(in_file):
+    _read_strategies = {'.txt': readit,
+                        '.ini': readit,
+                        '.json': loadjson,
+                        '.jpg': readbin,
+                        '.png': readbin,
+                        '.tga': readbin,
+                        '.ico': readbin,
+                        '.pkl': readbin,
+                        '.py': readit,
+                        '.cmd': readit,
+                        '.exe': np_readbin,
+                        '.env': readit,
+                        '.log': readit,
+                        '.errors': readit,
+                        '.bat': readit,
+                        '.md': readit}
+    _ext = os.path.splitext(in_file)[1]
+    return _read_strategies.get(_ext, readbin)(in_file)
+
 # region[Main_Exec]
+
 
 if __name__ == '__main__':
     pass

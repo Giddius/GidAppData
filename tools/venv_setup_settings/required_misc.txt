@@ -14,4 +14,4 @@ jsonpickle
 fuzzywuzzy
 fuzzysearch
 python-Levenshtein
-natsort
+dirtree

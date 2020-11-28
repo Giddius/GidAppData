@@ -1,14 +1,31 @@
-from collections import namedtuple
-skeleton_item = namedtuple('SkeletonItem', ['name', 'typus', 'content'], defaults=[''])
+import os
+from gidappdata.cli.skeleton_tree import DirSkeletonReader
+from gidappdata.utility.functions import pathmaker
 
 
-SUBPACKAGE_FOLDER = skeleton_item('init_appdata_storage', 'folder')
-DATAPACK_FOLDER = skeleton_item('data_pack', 'folder')
-CONFIG_FOLDER = skeleton_item('config', 'folder')
-FIXED_DATA_FOLDER = skeleton_item('fixed_data', 'folder')
-IMAGE_FILES_FOLDER = skeleton_item('image_files', 'folder')
-MISC_FOLDER = skeleton_item('misc', 'folder')
-PLUGINS_FOLDER = skeleton_item('plugins', 'folder')
-USER_DATA_FOLDER = skeleton_item('user_data', 'folder')
+THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
+STANDARD = pathmaker(THIS_FILE_DIR, 'prebuilt_standard')
+SERIALIZE_SKELETONS_FOLDER = pathmaker(THIS_FILE_DIR, 'serialized_skeletons')
 
-SKELETON_STRUCTURE = {SUBPACKAGE_FOLDER: [{DATAPACK_FOLDER: [{CONFIG_FOLDER:[]}]}]}
+
+def selection_dict():
+    _out = {}
+    for item in os.scandir(THIS_FILE_DIR):
+        if os.path.isdir(item.path) and item.name.startswith('prebuilt_'):
+            _name = item.name.replace('prebuilt_', '')
+            _out[_name] = pathmaker(item.path)
+    return _out
+
+
+def make_tree(selection_name=None):
+    _source_path = selection_dict().get(selection_name, STANDARD)
+    root = DirSkeletonReader(_source_path)
+    print(list(root.get_paths()))
+    root.serialize(pathmaker(SERIALIZE_SKELETONS_FOLDER, os.path.basename(_source_path)))
+
+
+if __name__ == '__main__':
+    root = DirSkeletonReader(r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\GidAppData\tools")
+    root.serialize(pathmaker(SERIALIZE_SKELETONS_FOLDER, 'testing'))
+    for ix, xi in root.all_nodes():
+        print(ix)
