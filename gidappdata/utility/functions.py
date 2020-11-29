@@ -13,7 +13,7 @@ import base64
 import numpy as np
 # endregion[Imports]
 
-__updated__ = '2020-11-23 21:02:41'
+__updated__ = '2020-11-30 00:07:01'
 
 
 # region [Logging]
@@ -33,20 +33,24 @@ def create_folder(in_folder, overwrite=False):
         if overwrite is True:
             shutil.rmtree(in_folder)
         elif overwrite is False:
-            print(f'folder "{in_folder}" already exists')
+            log.debug('folder "%s" already exists', in_folder)
     if os.path.isdir(in_folder) is False:
         os.makedirs(in_folder)
-        print(f'created folder "{in_folder}"')
+        log.debug('created folder "%s"', in_folder)
 
 
 def create_file(in_file, file_content, overwrite=False):
     if os.path.isfile(in_file) is False or overwrite is True:
-        _write_mode = 'wb' if isinstance(file_content, bytes) else 'w'
-        with open(in_file, _write_mode) as outfile:
-            outfile.write(file_content)
-            print(f'created file "{in_file}"')
+        if os.path.splitext(in_file)[1] == '.json':
+            writejson(file_content, in_file, sort_keys=False, indent=2)
+        else:
+            _write_mode = 'wb' if isinstance(file_content, bytes) else 'w'
+            content = file_content if isinstance(file_content, bytes) else str(file_content)
+            with open(in_file, _write_mode) as outfile:
+                outfile.write(content)
+        log.debug('created file "%s"', in_file)
     else:
-        print(f'file "{in_file}" already exists')
+        log.debug('file "%s" already exists', in_file)
 
 
 def pathmaker(first_segment, *in_path_segments, rev=False):

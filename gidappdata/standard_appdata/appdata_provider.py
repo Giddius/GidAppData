@@ -15,7 +15,7 @@ from gidappdata.utility.functions import pathmaker
 
 # endregion [Imports]
 
-__updated__ = '2020-11-23 19:37:48'
+__updated__ = '2020-11-29 22:45:59'
 
 # region [Logging]
 

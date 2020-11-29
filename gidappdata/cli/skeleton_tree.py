@@ -42,7 +42,7 @@ import base64
 
 # endregion[Imports]
 
-__updated__ = '2020-11-23 20:47:14'
+__updated__ = '2020-11-29 23:52:10'
 
 # region [AppUserData]
 
@@ -54,6 +54,8 @@ log = glog.aux_logger(__name__)
 log.info(glog.imported(__name__))
 
 # endregion[Logging]
+
+THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def json_parts(item):
@@ -88,6 +90,7 @@ class SkeletonInstructionBaseItem:
 
 class SkeletonInstructionItem(SkeletonInstructionBaseItem):
     serialize_strategies = {'pickle': (pickleit, '.pkl'), 'json': (json_it, '.json')}
+    standard_root_name = 'data_pack'
 
     def __init__(self, name: str, typus: SkeletonTypus, parent: SkeletonInstructionBaseItem = None, content=None):
         self.name = name
@@ -168,6 +171,22 @@ class SkeletonInstructionItem(SkeletonInstructionBaseItem):
             _file = save_file_path + _extension if '.' not in os.path.basename(save_file_path) else save_file_path
             _func(self, _file)
 
+    @classmethod
+    def from_json_file(cls, json_file_path):
+        data = loadjson(json_file_path)
+        return cls.from_dict(data)
+
+    @classmethod
+    def from_dict(cls, dict_data):
+        root = cls(name=cls.standard_root_name, typus=SkeletonTypus.Root)
+        for parent, value in dict_data.items():
+            for name, typus, content in value:
+                if parent == cls.standard_root_name:
+                    root.add_child_item(SkeletonInstructionItem(name=name, typus=SkeletonTypus(typus), content=content))
+                else:
+                    root.find_node(parent).add_child_item(SkeletonInstructionItem(name=name, typus=SkeletonTypus(typus), content=content))
+        return root
+
     def __getattr__(self, name):
         _out = None
         for child in self.children:
@@ -199,6 +218,9 @@ class SkeletonInstructionItem(SkeletonInstructionBaseItem):
 class DirSkeletonReader:
     exclude = {'__pycache__', '.git'}
     exclude = set(map(lambda x: x.casefold(), exclude))
+    prebuilt_basefolder = pathmaker(THIS_FILE_DIR, '../data/skeletons')
+    prebuilt_folders = loadjson(pathmaker(THIS_FILE_DIR, 'prebuilt_folders.json'))
+    serialized_prebuilts_folder = pathmaker(THIS_FILE_DIR, '../data/serialized_skeletons')
 
     def __init__(self, start_folder_path):
         self.start_folder_path = start_folder_path
@@ -245,7 +267,32 @@ def quick_check_skeleton():
     print(root.find_node('first_folder_ini_file.ini').name)
 
 
+def get_all_prebuilts():
+    skeleton_selections = {}
+    for prebuilt_typus in DirSkeletonReader.prebuilt_folders:
+        src_folder = pathmaker(DirSkeletonReader.prebuilt_basefolder, prebuilt_typus)
+        if src_folder not in skeleton_selections:
+            skeleton_selections[prebuilt_typus] = {}
+        for skeleton in os.scandir(src_folder):
+            if os.path.isdir(skeleton.path):
+                skeleton_selections[prebuilt_typus][skeleton.name] = pathmaker(skeleton.path, 'data_pack')
+    return skeleton_selections
+
+
+def serialize_all_prebuilts():
+    for file in os.scandir(DirSkeletonReader.serialized_prebuilts_folder):
+        if os.path.isfile(file):
+            os.remove(file.path)
+    for typus_folder, value in get_all_prebuilts().items():
+        typus = typus_folder.replace('prebuilt_', '')
+        for name, path in value.items():
+            name = f"[{typus}]_{name}"
+            skeleton_tree = DirSkeletonReader(path)
+            skeleton_tree.serialize(pathmaker(DirSkeletonReader.serialized_prebuilts_folder, name))
+
+
 # region[Main_Exec]
+
 
 if __name__ == '__main__':
     x = DirSkeletonReader(r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\PyQt_Socius\pyqtsocius\init_userdata\data_pack")

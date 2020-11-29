@@ -67,7 +67,7 @@ def write_to_pyfile(in_path, **kwargs):
     with open(_path, 'w') as _file:
         for key, value in kwargs.items():
             _content = value
-            _file.write(f'{key} = {_content}\n\n')
+            _file.write(f'{key.strip()} = {_content.strip()}\n\n')
     log.info("bin data was written to python file: '%s'", _path)
     return _path
 
@@ -107,7 +107,6 @@ def post_clean_zip_file(file_path):
         log.info("cleanup of zip file successfully done")
     else:
         log.critical("was not able to remove zip file '%s'", file_path)
-    sleep(2)
 
 
 def read_const_file(const_file):
@@ -123,7 +122,6 @@ def read_const_file(const_file):
 
 def post_checks(bin_py_file, const_file):
 
-    sleep(1)
     log.info('checking existance of binary pyfile:')
 
     if os.path.exists(bin_py_file) is True:
@@ -131,8 +129,6 @@ def post_checks(bin_py_file, const_file):
         log.info("--> size: %s%s", *convert_file_size(bin_py_file))
     else:
         log.critical("binary pyfile does NOT exist! should be at '%s'", bin_py_file)
-
-    sleep(2)
 
     log.info('checking existance of construction info file:')
     if os.path.exists(const_file) is True:
@@ -144,26 +140,27 @@ def post_checks(bin_py_file, const_file):
             log.info("-----------------------")
     else:
         log.critical("construction info file does NOT exist! should be at '%s'", const_file)
-    sleep(2)
 
 
-@click.command(name='folder_to_pybin', add_help_option=True)
+@click.command()
 @click.argument('init_userdata_dir')
-@click.option('-n', '--appname', required=bool)
+@click.option('-n', '--appname', default=os.getenv('PROJECT_NAME'))
 @click.option('-a', '--author', default='BrocaProgs')
 @click.option('--use-base64/--dont-base64', '-64/-no64', default=True)
 @click.option('--clean-zip-file/--keep-zip-file', '-cz/-kz', default=True)
 def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file):
     start_time = time()
+    if appname is None or appname == '':
+        print('Unable to obtain "appname" from env variable, please set "PROJECT_NAME" env variable or provide appname as cli-option')
+        return
+    appname = appname.replace(' ', '-').replace('_', '-').title()
     log.info("Starting conversion for data_pack in '%s'")
     _archive = pack_data(init_userdata_dir)
 
-    sleep(1)
     log.info('converted archive to bin')
-    sleep(1)
 
     _py_file = write_to_pyfile(init_userdata_dir, bin_archive_data=convert_to_bin(_archive, use_base64))
-    sleep(1)
+
     _const_file = write_construction_info(in_path=init_userdata_dir, appname=appname, author=author, uses_base64=use_base64)
 
     if clean_zip_file is True:
@@ -172,10 +169,8 @@ def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, c
     log.info('running post-checks')
     post_checks(_py_file, _const_file)
 
-    sleep(2)
     log.debug('overall time taken: %s seconds', str(round(time() - start_time, 3)))
     log.info('---done---')
-    sleep(5)
 
 
 if __name__ == '__main__':
