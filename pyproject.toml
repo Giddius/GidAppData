@@ -14,4 +14,6 @@ requires = []
 
 
 [tool.flit.scripts]
-apdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:generate_user_data_binfile"
+appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:generate_user_data_binfile"
+appdata_list_skeletons = "gidappdata.cli.create_datapack_skeleton:list_available"
+appdata_build_skeleton = "gidappdata.cli.create_datapack_skeleton:build_target_skeleton"

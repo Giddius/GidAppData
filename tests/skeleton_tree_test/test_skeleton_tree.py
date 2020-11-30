@@ -1,7 +1,8 @@
 import pytest
-from gidappdata.cli.skeleton_tree import SkeletonInstructionItem, SkeletonTypus
-from gidappdata.utility.functions import readbin, readit, pathmaker
+from gidappdata.cli.skeleton_tree import SkeletonInstructionItem, SkeletonTypus, DirSkeletonReader
+from gidappdata.utility.functions import readbin, readit, pathmaker, loadjson
 import os
+
 THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 RESTRUCTURE_REASON = "implementing new child Item method soon"
@@ -135,3 +136,20 @@ def test_find_node(simple_directory_tree):
     assert y.name == 'nested_test.json'
     assert y.typus == SkeletonTypus.File
     assert y.content == '{}'
+
+
+def test_serialize(tmpdir):
+    source_dir = pathmaker(THIS_FILE_DIR, 'example_dir', 'data_pack')
+    target = tmpdir.join('serialize_test.json')
+    tree = DirSkeletonReader(source_dir)
+    tree.serialize(target, strategy='json')
+    assert loadjson(target) == loadjson(pathmaker(THIS_FILE_DIR, 'serialize_test_compare.json'))
+
+
+def test_build_from_json(tmpdir):
+    target = tmpdir.mkdir('test_tree_build')
+    tree = SkeletonInstructionItem.from_json_file(pathmaker(THIS_FILE_DIR, 'serialize_test_compare.json'))
+    tree.set_root_path(target)
+    tree.start_build()
+    for path in tree.get_paths():
+        assert os.path.exists(path) is True

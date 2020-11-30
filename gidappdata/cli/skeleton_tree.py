@@ -42,7 +42,7 @@ import base64
 
 # endregion[Imports]
 
-__updated__ = '2020-11-29 23:52:10'
+__updated__ = '2020-11-30 16:02:57'
 
 # region [AppUserData]
 
@@ -295,7 +295,5 @@ def serialize_all_prebuilts():
 
 
 if __name__ == '__main__':
-    x = DirSkeletonReader(r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\PyQt_Socius\pyqtsocius\init_userdata\data_pack")
-
-    x.serialize('test_serial')
+    pass
 # endregion[Main_Exec]

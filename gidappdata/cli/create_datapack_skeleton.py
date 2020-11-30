@@ -4,8 +4,9 @@ import click
 from dotenv import load_dotenv, find_dotenv
 from gidappdata.utility.functions import pathmaker, create_folder, create_file, loadjson
 from gidappdata.utility.extended_dotenv import find_dotenv_everywhere
-from gidappdata.cli.skeleton_tree import serialize_all_prebuilts, DirSkeletonReader, SkeletonInstructionItem
+from gidappdata.cli.skeleton_tree import serialize_all_prebuilts, DirSkeletonReader, SkeletonInstructionItem, get_all_prebuilts
 from pprint import pprint
+from gidappdata.cli.tree_render import print_tree
 
 THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -43,8 +44,13 @@ def select_skeleton(skeleton_selection, skeleton_category=None):
     return SkeletonInstructionItem.from_dict(json_data)
 
 
-def build_target_skeleton(path, skeleton_selection, skeleton_category=None, overwrite=False):
-    path = pathmaker(path, 'init_userdata')
+@click.command()
+@click.argument('target_dir')
+@click.argument('skeleton_selection')
+@click.option('-c', '--skeleton-category', default=None)
+@click.option('--overwrite/--no-overwrite', '-o/-no', default=False)
+def build_target_skeleton(target_dir, skeleton_selection, skeleton_category, overwrite):
+    path = pathmaker(target_dir, 'init_userdata')
     skeleton_tree = select_skeleton(skeleton_selection, skeleton_category)
     skeleton_tree.set_root_path(pathmaker(path, skeleton_tree.name))
     skeleton_tree.start_build(overwrite=overwrite)
@@ -53,6 +59,22 @@ def build_target_skeleton(path, skeleton_selection, skeleton_category=None, over
     create_user_data_setup(path)
 
 
+@click.command()
+@click.option('--tree/--no-tree', '-t/-nt', default=True)
+def list_available(tree):
+    all_prebuilts = get_all_prebuilts()
+
+    for category, value in all_prebuilts.items():
+        category = category.replace('prebuilt_', '')
+        for name, path in value.items():
+
+            print('\n\n#################################\n')
+            print('Category: ' + category.upper() + ' --> ' + 'Name: ' + name)
+            if tree:
+                path = os.path.dirname(path)
+                print_tree(path, category)
+            print('\n#################################\n\n')
+
+
 if __name__ == '__main__':
-    # build_target_skeleton(r"C:\Users\Giddi\Downloads\newfolder", 'basic')
-    pass
+    list_available()
