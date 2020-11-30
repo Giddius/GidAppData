@@ -6,7 +6,17 @@
 
 - generate singleton appdata creation py file
 
+### Unimportant
+
+### Maybe
+
 ## Bugs
+
+### Important
+
+### Unimportant
+
+### Maybe
 
 ## Tests
 
@@ -14,8 +24,15 @@
 
 - Test cli scripts
 
+### Unimportant
+
+### Maybe
 
 ## Misc
+
+### Important
+
+### Unimportant
 
 ### Maybe
 

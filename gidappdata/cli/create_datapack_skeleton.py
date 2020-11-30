@@ -23,7 +23,9 @@ def get_all_serialized_skeletons():
 
 
 def create_user_data_setup(path):
-    pass
+    user_data_setup_file = pathmaker(path, 'user_data_setup.py')
+    with open(user_data_setup_file, 'w') as uds_file:
+        uds_file.write('\n')
 
 
 def create_dev_env_trigger(in_path):
