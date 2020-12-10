@@ -12,7 +12,7 @@ pushd %FILEFOLDER%
 rem ----------------------------------------------------------------
 cd ..\..\tools
 echo ##################### setting vars from %cd%\_project_meta.env
-for /f %%i in (_project_meta.env) do set %%i && echo %%i
+for /f %%i in (_project_meta.env) do set %%i
 rem ----------------------------------------------------------------
 popd
 """

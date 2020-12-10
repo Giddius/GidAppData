@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Union
+import sys
 # prefix components:
 space = '    '
 branch = '│   '
@@ -61,4 +62,4 @@ def print_tree(dir_path: Union[Path, str], category=None):
 
 
 if __name__ == '__main__':
-    pass
+    print_tree(sys.argv[1])

@@ -6,6 +6,9 @@
 
 - generate singleton appdata creation py file
 
+- create logger in Supportkeeper
+
+
 ### Unimportant
 
 ### Maybe

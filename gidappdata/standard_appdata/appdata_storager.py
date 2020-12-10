@@ -15,7 +15,7 @@ import appdirs
 
 # endregion [Imports]
 
-__updated__ = '2020-11-27 18:38:31'
+__updated__ = '2020-12-01 00:34:33'
 
 
 # region [Logging]
@@ -32,48 +32,55 @@ log.info(glog.imported(__name__))
 # endregion [Constants]
 
 
-# region [Misc]
-
-
-# endregion [Misc]
-
-
-# region [Global_Functions]
-
-
-# endregion [Global_Functions]
-
 class _AppDataFolder(Enum):
     AllFolder = auto()
     LogFolder = "log_folder"
     AppStorageFolder = "appstorage_folder"
 
 
-# region [Class_2]
-
-
 class AppDataStorager:
+    # region [ClassAttributes]
+
     AllFolder = _AppDataFolder.AllFolder
     LogFolder = _AppDataFolder.LogFolder
     AppStorageFolder = _AppDataFolder.AppStorageFolder
 
-    def __init__(self, author_name: str, app_name: str, dev: str = None, redirect=None):
+# endregion[ClassAttributes]
+# region [Init]
+
+    def __init__(self, author_name: str, app_name: str, dev: bool = False, redirect: str = None):
         # sourcery skip: simplify-boolean-comparison
         self.dev = dev
         self.author_name = author_name
         self.app_name = app_name
         self.redirect = redirect
         self.managed_folder = []
-        self._manipulate_enviroment(redirect)
         self.operating_system = sys.platform
-        self.appstorage_folder = None if self.dev is None else self.dev
-        self.log_folder = None if self.dev is None else pathmaker(self.dev, 'Logs')
-        if self.dev is None:
+        self.appstorage_folder = None if self.dev is False else self.redirect
+        self.log_folder = None if self.dev is False else pathmaker(self.redirect, 'Logs')
+        if self.dev is False:
             self.setup_app_storage_base()
 
-    def _manipulate_enviroment(self, redirect):
-        if redirect is not None:
-            os.environ['APPDATA'] = redirect
+# endregion[Init]
+# region [Properties]
+
+    @property
+    def folder(self):
+        _out = {}
+        for dirname, dirlist, _ in os.walk(self.appstorage_folder):
+            for _dir in dirlist:
+                _out[_dir] = pathmaker(dirname, _dir)
+        return _out
+
+    @property
+    def files(self):
+        _out = {}
+        for dirname, _, filelist in os.walk(self.appstorage_folder):
+            for _file in filelist:
+                _out[_file] = pathmaker(dirname, _file)
+        return _out
+
+# endregion[Properties]
 
     def setup_app_storage_base(self):
         self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name, appname=self.app_name, roaming=True))
@@ -105,30 +112,6 @@ class AppDataStorager:
         else:
             return pathmaker(self.appstorage_folder, filename)
 
-    def __getitem__(self, key):
-        _out = None
-        if key in self.files:
-            _out = self.files[key]
-        elif key in self.folder:
-            _out = self.folder[key]
-        return _out
-
-    @property
-    def folder(self):
-        _out = {}
-        for dirname, dirlist, _ in os.walk(self.appstorage_folder):
-            for _dir in dirlist:
-                _out[_dir] = pathmaker(dirname, _dir)
-        return _out
-
-    @property
-    def files(self):
-        _out = {}
-        for dirname, _, filelist in os.walk(self.appstorage_folder):
-            for _file in filelist:
-                _out[_file] = pathmaker(dirname, _file)
-        return _out
-
     def _get_app_base_folder(self, in_folder):
         _folder = in_folder
         while os.path.basename(_folder) != self.author_name:
@@ -147,16 +130,20 @@ class AppDataStorager:
             shutil.rmtree(_base_folder)
             log.info('deleted appdata folder "%s"', _base_folder)
 
+# region [SpecialMethods]
+
+    def __getitem__(self, key):
+        _out = None
+        if key in self.files:
+            _out = self.files[key]
+        elif key in self.folder:
+            _out = self.folder[key]
+        return _out
+
     def __str__(self):
         return self.appstorage_folder
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.author_name}, {self.app_name}, {str(self.dev)}, {str(self.redirect)})"
 
-# endregion [Class_2]
-
-
-# region [Main_Exec]
-if __name__ == '__main__':
-    pass
-# endregion [Main_Exec]
+# endregion[SpecialMethods]

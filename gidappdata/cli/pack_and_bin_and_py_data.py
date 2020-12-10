@@ -73,12 +73,11 @@ def write_to_pyfile(in_path, **kwargs):
 
 
 def write_construction_info(in_path, appname, author='BrocaProgs', uses_base64=True):
-    _path = pathmaker(in_path, 'construction_info.py')
+    _path = pathmaker(in_path, 'construction_info.env')
     with open(_path, 'w') as confo_file:
         confo_file.write(f"USES_BASE64 = {str(uses_base64)}\n")
-        confo_file.write("REDIRECT = None\n")
-        confo_file.write(f"AUTHOR = '{str(author)}'\n")
-        confo_file.write(f"APPNAME = '{str(appname)}'\n")
+        confo_file.write(f"AUTHOR_NAME = {str(author)}\n")
+        confo_file.write(f"APP_NAME = '{str(appname)}'\n")
     log.info("construction info file was written to python file: '%s'", _path)
     return _path
 
@@ -174,4 +173,7 @@ def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, c
 
 
 if __name__ == '__main__':
+    # THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
+    # _archive = pack_data(r"D:\Dropbox\hobby\Modding\Programs\Github\My_Repos\GidAppData\gidappdata\data\skeletons\prebuilt_standard\basic")
+    # _py_file = write_to_pyfile(THIS_FILE_DIR, bin_archive_data=convert_to_bin(_archive, True))
     pass

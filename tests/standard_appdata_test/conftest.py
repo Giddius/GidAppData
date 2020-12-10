@@ -1,8 +1,11 @@
 import pytest
-from gidappdata import AppDataStorager
+from gidappdata import AppDataStorager, SupportKeeper
 import os
 import shutil
 from gidappdata.utility.functions import readit, writeit, writebin, create_folder, writejson, pickleit, pathmaker
+from .bin_data import bin_archive_data
+
+THIS_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 @pytest.fixture
@@ -30,3 +33,25 @@ def filled_appdata_storage(simple_appdata_storage):
     for image in images:
         shutil.copyfile(pathmaker(source_folder, image), pathmaker(target_folder, image))
     yield simple_appdata_storage
+
+
+@pytest.fixture
+def construction_env():
+    path = pathmaker(THIS_FILE_DIR, 'construction_info.env')
+    author_name = "BrocaProgs"
+    app_name = "Test_App"
+    with open(path, 'w') as const_file:
+        const_file.write("USES_BASE64=True\n")
+        const_file.write(f"AUTHOR_NAME={author_name}\n")
+        const_file.write(f"APP_NAME={app_name}")
+    yield author_name, app_name
+    os.remove(path)
+
+
+@pytest.fixture
+def deployed_supportkeeper(construction_env):
+    save_path = pathmaker(os.getenv('APPDATA'), construction_env[0], construction_env[1])
+    SupportKeeper.initialize(bin_archive_data)
+    yield SupportKeeper.appdata, save_path
+    shutil.rmtree(os.path.dirname(save_path))
+    assert os.path.isdir(os.path.dirname(save_path)) is False

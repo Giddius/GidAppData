@@ -13,7 +13,7 @@ import base64
 import numpy as np
 # endregion[Imports]
 
-__updated__ = '2020-11-30 00:07:01'
+__updated__ = '2020-12-01 02:45:07'
 
 
 # region [Logging]
@@ -257,6 +257,48 @@ def read_file(in_file):
     _ext = os.path.splitext(in_file)[1]
     return _read_strategies.get(_ext, readbin)(in_file)
 
+
+def to_attr_name(in_name):
+
+    replace_dict = {' ': '_',
+                    '-': '_',
+                    '.': '__',
+                    '/': '_',
+                    '\\': '_',
+                    '*': '',
+                    '{': '_',
+                    '}': '_',
+                    '[': '_',
+                    ']': '_',
+                    '(': '_',
+                    ')': '_',
+                    '>': '_',
+                    '<': '_',
+                    '#': '_',
+                    '+': '_',
+                    '&': '_',
+                    '$': '_',
+                    "'": '',
+                    '"': '', }
+
+    attr_name = in_name.strip()
+
+    for to_replace, replacement in replace_dict.items():
+        if to_replace in attr_name:
+            for amount in reversed(range(1, 10)):
+                if to_replace * amount in attr_name:
+
+                    attr_name = attr_name.lstrip(to_replace * amount).rstrip(to_replace * amount).replace(to_replace * amount, replacement)
+    return attr_name.casefold()
+
+
+def filename_to_attr_name(in_file, keep_ext=False):
+    attr_name = in_file
+    if os.path.sep in attr_name or '/' in attr_name:
+        attr_name = os.path.basename(attr_name)
+    if keep_ext is False:
+        attr_name = os.path.splitext(attr_name)[0]
+    return to_attr_name(attr_name)
 # region[Main_Exec]
 
 
