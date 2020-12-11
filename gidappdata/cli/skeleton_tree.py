@@ -42,7 +42,6 @@ import base64
 
 # endregion[Imports]
 
-__updated__ = '2020-11-30 16:02:57'
 
 # region [AppUserData]
 
@@ -50,7 +49,7 @@ __updated__ = '2020-11-30 16:02:57'
 
 # region [Logging]
 
-log = glog.aux_logger(__name__)
+log = logging.getLogger('gidappdata')
 log.info(glog.imported(__name__))
 
 # endregion[Logging]

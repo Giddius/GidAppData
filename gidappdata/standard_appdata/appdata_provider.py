@@ -7,7 +7,7 @@ import os
 import zipfile
 import os
 import base64
-
+import logging
 import gidlogger as glog
 from gidconfig.standard import ConfigRental
 from gidappdata.standard_appdata.appdata_storager import AppDataStorager
@@ -15,11 +15,10 @@ from gidappdata.utility.functions import pathmaker
 
 # endregion [Imports]
 
-__updated__ = '2020-11-29 22:45:59'
 
 # region [Logging]
 
-log = glog.aux_logger(__name__)
+log = logging.getLogger('gidappdata')
 log.info(glog.imported(__name__))
 
 # endregion [Logging]

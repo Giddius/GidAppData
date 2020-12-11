@@ -9,8 +9,11 @@ from gidappdata.utility.functions import pathmaker, writebin, writeit, writejson
 from time import sleep, time
 import gidlogger as glog
 import click
+import checksumdir
+import logging
 
-log = glog.main_logger_stdout('debug')
+log = logging.getLogger('gidappdata')
+
 log.info(glog.NEWRUN())
 
 
@@ -72,12 +75,13 @@ def write_to_pyfile(in_path, **kwargs):
     return _path
 
 
-def write_construction_info(in_path, appname, author='BrocaProgs', uses_base64=True):
+def write_construction_info(in_path, in_hash, appname, author='BrocaProgs', uses_base64=True):
     _path = pathmaker(in_path, 'construction_info.env')
     with open(_path, 'w') as confo_file:
         confo_file.write(f"USES_BASE64 = {str(uses_base64)}\n")
         confo_file.write(f"AUTHOR_NAME = {str(author)}\n")
-        confo_file.write(f"APP_NAME = '{str(appname)}'\n")
+        confo_file.write(f"APP_NAME = {str(appname)}\n")
+        confo_file.write(f"CURRENT_DATA_DIR_HASH = {str(in_hash)}")
     log.info("construction info file was written to python file: '%s'", _path)
     return _path
 
@@ -147,20 +151,23 @@ def post_checks(bin_py_file, const_file):
 @click.option('-a', '--author', default='BrocaProgs')
 @click.option('--use-base64/--dont-base64', '-64/-no64', default=True)
 @click.option('--clean-zip-file/--keep-zip-file', '-cz/-kz', default=True)
-def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file):
+def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file):
+
     start_time = time()
     if appname is None or appname == '':
         print('Unable to obtain "appname" from env variable, please set "PROJECT_NAME" env variable or provide appname as cli-option')
         return
     appname = appname.replace(' ', '-').replace('_', '-').title()
+    author = author.replace(' ', '-').replace('_', '-').title()
     log.info("Starting conversion for data_pack in '%s'")
+    checksum_userdata = checksumdir.dirhash(pathmaker(init_userdata_dir, 'data_pack'))
     _archive = pack_data(init_userdata_dir)
 
     log.info('converted archive to bin')
 
     _py_file = write_to_pyfile(init_userdata_dir, bin_archive_data=convert_to_bin(_archive, use_base64))
 
-    _const_file = write_construction_info(in_path=init_userdata_dir, appname=appname, author=author, uses_base64=use_base64)
+    _const_file = write_construction_info(in_path=init_userdata_dir, in_hash=checksum_userdata, appname=appname, author=author, uses_base64=use_base64)
 
     if clean_zip_file is True:
         post_clean_zip_file(_archive)
@@ -170,6 +177,33 @@ def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, c
 
     log.debug('overall time taken: %s seconds', str(round(time() - start_time, 3)))
     log.info('---done---')
+
+
+def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64=True, clean_zip_file=True):
+    start_time = time()
+    if appname is None or appname == '':
+        print('Unable to obtain "appname" from env variable, please set "PROJECT_NAME" env variable or provide appname as cli-option')
+        return
+    appname = appname.replace(' ', '-').replace('_', '-').title()
+    log.info("Starting conversion for data_pack in '%s'")
+    checksum_userdata = checksumdir.dirhash(pathmaker(init_userdata_dir, 'data_pack'))
+    _archive = pack_data(init_userdata_dir)
+
+    log.info('converted archive to bin')
+    bin_data = convert_to_bin(_archive, use_base64)
+    _py_file = write_to_pyfile(init_userdata_dir, bin_archive_data=bin_data)
+
+    _const_file = write_construction_info(in_path=init_userdata_dir, in_hash=checksum_userdata, appname=appname, author=author, uses_base64=use_base64)
+
+    if clean_zip_file is True:
+        post_clean_zip_file(_archive)
+
+    log.info('running post-checks')
+    post_checks(_py_file, _const_file)
+
+    log.debug('overall time taken: %s seconds', str(round(time() - start_time, 3)))
+    log.info('---done---')
+    return bin_data
 
 
 if __name__ == '__main__':

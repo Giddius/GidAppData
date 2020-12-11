@@ -8,12 +8,19 @@ author = "Giddius"
 home-page = "https://github.com/Giddius/GidAppData"
 classifiers = ["License :: OSI Approved :: MIT License"]
 description-file = "readme.md"
-requires = []
+requires = [
+    "numpy>=1.19.3",
+    "click>=7.1.2",
+    "appdirs>=1.4.4",
+    "checksumdir>=1.2.0",
+    "gidconfig>=0.1.2",
+    "gidlogger>=0.1.2",
+    "python-dotenv>=0.15.0",
+    ]
 
 
 
 
 [tool.flit.scripts]
-appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:generate_user_data_binfile"
-appdata_list_skeletons = "gidappdata.cli.create_datapack_skeleton:list_available"
-appdata_build_skeleton = "gidappdata.cli.create_datapack_skeleton:build_target_skeleton"
+appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:cli_generate_user_data_binfile"
+appdata_provide = "gidappdata.cli.create_datapack_skeleton:cli"

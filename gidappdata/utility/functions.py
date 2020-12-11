@@ -13,12 +13,10 @@ import base64
 import numpy as np
 # endregion[Imports]
 
-__updated__ = '2020-12-01 02:45:07'
-
 
 # region [Logging]
 
-log = glog.aux_logger(__name__)
+log = glog.logging.getLogger('gidappdata')
 log.info(glog.imported(__name__))
 
 # endregion[Logging]

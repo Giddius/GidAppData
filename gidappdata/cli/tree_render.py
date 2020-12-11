@@ -54,11 +54,11 @@ def create_tree(dir_path: Path, prefix: str = '    ', category=None):
     yield from tree(dir_path, prefix)
 
 
-def print_tree(dir_path: Union[Path, str], category=None):
+def print_tree(dir_path: Union[Path, str], category=None, output_function=print):
     if isinstance(dir_path, str):
         dir_path = Path(dir_path)
     for line in create_tree(dir_path, '    ', category):
-        print(line)
+        output_function(line)
 
 
 if __name__ == '__main__':

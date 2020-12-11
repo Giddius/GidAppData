@@ -6,7 +6,7 @@ from enum import Enum, auto
 import os
 import sys
 import shutil
-
+import logging
 from gidappdata.utility.functions import appendwriteit, linereadit, pathmaker, readit, writeit, writejson, loadjson
 
 import gidlogger as glog
@@ -15,12 +15,10 @@ import appdirs
 
 # endregion [Imports]
 
-__updated__ = '2020-12-01 00:34:33'
-
 
 # region [Logging]
 
-log = glog.aux_logger(__name__)
+log = logging.getLogger('gidappdata')
 log.info(glog.imported(__name__))
 
 # endregion [Logging]
