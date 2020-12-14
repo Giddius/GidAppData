@@ -12,7 +12,7 @@ import gidlogger as glog
 from gidconfig.standard import ConfigHandler
 
 from gidappdata.standard_appdata.appdata_storager import AppDataStorager
-from gidappdata.utility.functions import pathmaker, to_attr_name, filename_to_attr_name, create_folder, create_file
+from gidappdata.utility.functions import pathmaker, to_attr_name, filename_to_attr_name, create_folder, create_file, readit, writeit
 from gidappdata.utility.extended_dotenv import find_dotenv_everywhere
 from gidappdata.utility.exceptions import ConstructionEnvDataMissing, DevSettingError
 from gidappdata.cli.pack_and_bin_and_py_data import generate_user_data_binfile
@@ -44,7 +44,7 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
     appdata = None
     configs = {}
     construction_env_filename = 'construction_info.env'
-    app_info = {'app_name': None, 'author_name': None, 'uses_base64': None, 'clean': True, 'dev': False, 'redirect': ''}
+    app_info = {'app_name': None, 'author_name': None, 'uses_base64': None, 'clean': True, 'dev': False, 'redirect': '', 'log_folder': '', "is_unpacked": False}
     config_handler = ConfigHandler
     archive_data = None
     # endregion[ClassAttributes]
@@ -63,6 +63,7 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
                         log.debug("extracted file '%s' because it didn't exist", pathmaker(root_dir, item))
                     else:
                         log.debug("file '%s' is already existing and overwrite is 'False' so file was not extracted", pathmaker(root_dir, item))
+        log.info('unzipping finished')
 
     @classmethod
     def set_experimental_confighandler(cls):
@@ -74,13 +75,14 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
         cls.app_info['clean'] = setting
 
     @classmethod
-    def set_dev(cls, setting: bool, redirect=None):
+    def set_dev(cls, setting: bool, redirect=None, log_folder=None):
         # sourcery skip: simplify-boolean-comparison
         cls.app_info['dev'] = setting
         if setting is True:
             if redirect is None:
                 raise DevSettingError()
             cls.app_info['redirect'] = pathmaker(redirect)
+            cls.app_info['log_folder'] = pathmaker(log_folder)
 
     @classmethod
     def set_archive_data(cls, archive_data: bytes):
@@ -115,6 +117,22 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
             os.remove(_file)
 
     @classmethod
+    def find_construct_env(cls):
+        for dirname, folderlist, filelist in os.walk(os.getcwd()):
+            for file in filelist:
+                if file == cls.construction_env_filename:
+                    return pathmaker(dirname, file)
+
+    @classmethod
+    def set_unpacked(cls):
+        cls.app_info['is_unpacked'] = True
+        construction_file = cls.find_construct_env()
+        construct_content = readit(construction_file)
+        if "IS_UNPACKED=yes" not in construct_content:
+            construct_content += '\nIS_UNPACKED=yes'
+        writeit(construction_file, construct_content)
+
+    @classmethod
     def initialize(cls, archive_data=None):
         if cls.is_init is True:
             return
@@ -123,9 +141,13 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
             if cls.app_info[info] is None:
                 cls.app_info[info] = cls.checked_get_env(info.upper())
         redirect = None if cls.app_info['redirect'] == '' else cls.app_info['redirect']
+        log_folder = None if cls.app_info['log_folder'] == '' else cls.app_info['log_folder']
         archive_data = cls.archive_data if archive_data is None else archive_data
-        cls.appdata = AppDataStorager(cls.app_info['author_name'], cls.app_info['app_name'], cls.app_info['dev'], redirect)
-        cls.unpack_archive(archive_data, cls.app_info['clean'], cls.app_info['uses_base64'])
+        cls.appdata = AppDataStorager(cls.app_info['author_name'], cls.app_info['app_name'], cls.app_info['dev'], redirect, log_folder)
+
+        if cls.app_info['dev'] is False or cls.app_info.get('is_unpacked') is False:
+            cls.unpack_archive(archive_data, cls.app_info['clean'], cls.app_info['uses_base64'])
+            cls.set_unpacked()
         if os.path.isdir(cls.appdata['config']) is True:
             for file in os.scandir(cls.appdata['config']):
                 if file.name.endswith('.ini') and 'config' in file.name:

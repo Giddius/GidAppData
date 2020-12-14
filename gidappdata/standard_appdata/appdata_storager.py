@@ -46,7 +46,7 @@ class AppDataStorager:
 # endregion[ClassAttributes]
 # region [Init]
 
-    def __init__(self, author_name: str, app_name: str, dev: bool = False, redirect: str = None):
+    def __init__(self, author_name: str, app_name: str, dev: bool = False, redirect: str = None, log_folder: str = None):
         # sourcery skip: simplify-boolean-comparison
         self.dev = dev
         self.author_name = author_name
@@ -55,7 +55,7 @@ class AppDataStorager:
         self.managed_folder = []
         self.operating_system = sys.platform
         self.appstorage_folder = None if self.dev is False else self.redirect
-        self.log_folder = None if self.dev is False else pathmaker(self.redirect, 'Logs')
+        self.log_folder = None if self.dev is False else pathmaker(log_folder, 'logs')
         if self.dev is False:
             self.setup_app_storage_base()
 

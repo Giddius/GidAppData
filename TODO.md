@@ -4,7 +4,8 @@
 
 ### Important
 
-- generate singleton appdata creation py file
+- create switch method to determin where to getinfo from
+
 
 - create logger in Supportkeeper
 
