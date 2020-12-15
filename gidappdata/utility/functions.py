@@ -10,7 +10,7 @@ import pickle
 import gidlogger as glog
 from functools import partial
 import base64
-import numpy as np
+# import numpy as np
 # endregion[Imports]
 
 
@@ -231,8 +231,8 @@ def get_pickled(in_path):
         return pickle.load(pickletoretrieve)
 
 
-def np_readbin(in_path):
-    return np.frombuffer(readbin(in_path))
+# def np_readbin(in_path):
+#     return np.frombuffer(readbin(in_path))
 
 
 def read_file(in_file):
