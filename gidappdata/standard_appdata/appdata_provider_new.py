@@ -148,6 +148,7 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
                 if file.name.endswith('.ini') and 'config' in file.name:
                     name = filename_to_attr_name(file.name)
                     cls.configs[name] = ConfigHandler(cls.appdata[file.name])
+        cls.is_init = True
 
     @classmethod
     def get_appdata(cls):
