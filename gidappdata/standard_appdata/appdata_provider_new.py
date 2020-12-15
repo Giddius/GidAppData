@@ -126,11 +126,6 @@ class SupportKeeper(metaclass=SupportKeeperMetaHelper):
     @classmethod
     def set_unpacked(cls):
         cls.app_info['is_unpacked'] = True
-        construction_file = cls.find_construct_env()
-        construct_content = readit(construction_file)
-        if "IS_UNPACKED=yes" not in construct_content:
-            construct_content += '\nIS_UNPACKED=yes'
-        writeit(construction_file, construct_content)
 
     @classmethod
     def initialize(cls, archive_data=None):
