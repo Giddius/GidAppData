@@ -59,12 +59,14 @@ def readit(in_file, per_lines=False, in_encoding='utf-8', in_errors=None):
 
 def convert(use_requirements_txt: bool):
     os.chdir(THIS_FILE_DIR)
-    _out_list = []
     dev_lines = readit(REQU_DEV_FILE, per_lines=True)
-    for line in dev_lines:
-        if line != '' and 'git+' not in line and '#' not in line:
-            _out_list.append(line.strip())
-    if use_requirements_txt is True:
+    _out_list = [
+        line.strip()
+        for line in dev_lines
+        if line != '' and 'git+' not in line and '#' not in line
+    ]
+
+    if use_requirements_txt:
         writeit(REQU_NORM_FILE, '\n'.join(_out_list))
     else:
         convert_and_replace_to_toml(_out_list)
