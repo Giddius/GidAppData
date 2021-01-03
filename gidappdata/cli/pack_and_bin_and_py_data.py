@@ -10,6 +10,9 @@ from time import sleep, time
 import gidlogger as glog
 import click
 import logging
+import glob
+from tempfile import TemporaryDirectory
+import checksumdir
 
 log = logging.getLogger('gidappdata')
 
@@ -144,21 +147,50 @@ def post_checks(bin_py_file, const_file):
         log.critical("construction info file does NOT exist! should be at '%s'", const_file)
 
 
+def get_ignore_pattern_files(base_folder, pattern, file_list):
+    for file in glob.iglob(base_folder + '/**/' + pattern, recursive=True):
+        file_list.append(pathmaker(os.path.abspath(file)))
+
+
+def temporary_move_out(filelist, tempdir):
+    _out = []
+    for file in filelist:
+        print('moving out "%s"', os.path.basename(file))
+        new_path = pathmaker(tempdir, os.path.basename(file))
+
+        _out.append((file, new_path))
+        shutil.move(file, new_path)
+    return _out
+
+
+def move_back(filelist):
+    for file in filelist:
+        shutil.move(file[1], file[0])
+
+
 @click.command()
 @click.argument('init_userdata_dir')
 @click.option('-n', '--appname', default=os.getenv('PROJECT_NAME'))
 @click.option('-a', '--author', default='BrocaProgs')
 @click.option('--use-base64/--dont-base64', '-64/-no64', default=True)
 @click.option('--clean-zip-file/--keep-zip-file', '-cz/-kz', default=True)
-def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file):
+@click.option('--ignore-pattern', '-i', multiple=True)
+def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file, ignore_pattern):
 
     start_time = time()
+    tempdir = TemporaryDirectory()
+    tempdir_name = tempdir.name
+    ignore_files = []
+    for pattern in ignore_pattern:
+        get_ignore_pattern_files(init_userdata_dir, pattern, ignore_files)
+    moved_files = temporary_move_out(ignore_files, tempdir_name)
     if appname is None or appname == '':
         print('Unable to obtain "appname" from env variable, please set "PROJECT_NAME" env variable or provide appname as cli-option')
         return
     appname = appname.replace(' ', '-').replace('_', '-').title()
     author = author.replace(' ', '-').replace('_', '-').title()
     log.info("Starting conversion for data_pack in '%s'")
+
     _archive = pack_data(init_userdata_dir)
 
     log.info('converted archive to bin')
@@ -172,13 +204,21 @@ def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base6
 
     log.info('running post-checks')
     post_checks(_py_file, _const_file)
+    move_back(moved_files)
+    tempdir.cleanup()
 
     log.debug('overall time taken: %s seconds', str(round(time() - start_time, 3)))
     log.info('---done---')
 
 
-def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64=True, clean_zip_file=True):
+def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64=True, clean_zip_file=True, ignore_pattern=None):
     start_time = time()
+    tempdir = TemporaryDirectory()
+    tempdir_name = tempdir.name
+    ignore_files = []
+    for pattern in ignore_pattern:
+        get_ignore_pattern_files(init_userdata_dir, pattern, ignore_files)
+    moved_files = temporary_move_out(ignore_files, tempdir_name)
     if appname is None or appname == '':
         print('Unable to obtain "appname" from env variable, please set "PROJECT_NAME" env variable or provide appname as cli-option')
         return
@@ -198,7 +238,8 @@ def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64=Tr
 
     log.info('running post-checks')
     post_checks(_py_file, _const_file)
-
+    move_back(moved_files)
+    tempdir.cleanup()
     log.debug('overall time taken: %s seconds', str(round(time() - start_time, 3)))
     log.info('---done---')
     return bin_data

@@ -246,7 +246,6 @@ def read_file(in_file):
                         '.pkl': readbin,
                         '.py': readit,
                         '.cmd': readit,
-                        '.exe': np_readbin,
                         '.env': readit,
                         '.log': readit,
                         '.errors': readit,

@@ -35,7 +35,7 @@ def filled_appdata_storage(simple_appdata_storage):
     yield simple_appdata_storage
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def construction_env():
     path = pathmaker(THIS_FILE_DIR, 'construction_info.env')
     author_name = "BrocaProgs"
@@ -48,10 +48,11 @@ def construction_env():
     os.remove(path)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def deployed_supportkeeper(construction_env):
     save_path = pathmaker(os.getenv('APPDATA'), construction_env[0], construction_env[1])
-    SupportKeeper.initialize(bin_archive_data)
-    yield SupportKeeper.appdata, save_path
+    SupportKeeper.set_archive_data(bin_archive_data)
+    print(SupportKeeper.get_appdata())
+    yield SupportKeeper.get_appdata(), save_path
     shutil.rmtree(os.path.dirname(save_path))
     assert os.path.isdir(os.path.dirname(save_path)) is False
