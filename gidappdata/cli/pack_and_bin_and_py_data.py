@@ -6,6 +6,7 @@ import shutil
 import base64
 from dotenv import load_dotenv
 from gidappdata.utility.functions import pathmaker, writebin, writeit, writejson, readbin, readit
+from gidappdata.utility.exceptions import IsDuplicateNameError
 from time import sleep, time
 import gidlogger as glog
 import click
@@ -168,6 +169,22 @@ def move_back(filelist):
         shutil.move(file[1], file[0])
 
 
+def duplicate_check(in_dir):
+    collected_folder = []
+    collected_files = []
+    for dirname, folderlist, filelist in os.walk(in_dir):
+        for folder in folderlist:
+            if folder not in collected_folder:
+                collected_folder.append(folder)
+            else:
+                raise IsDuplicateNameError(folder, pathmaker(dirname, folder), False)
+        for file in filelist:
+            if file not in collected_files:
+                collected_files.append(file)
+            else:
+                raise IsDuplicateNameError(file, pathmaker(dirname, file), True)
+
+
 @click.command()
 @click.argument('init_userdata_dir')
 @click.option('-n', '--appname', default=os.getenv('PROJECT_NAME'))
@@ -178,6 +195,7 @@ def move_back(filelist):
 def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base64, clean_zip_file, ignore_pattern):
 
     start_time = time()
+    duplicate_check(init_userdata_dir)
     tempdir = TemporaryDirectory()
     tempdir_name = tempdir.name
     ignore_files = []
@@ -213,6 +231,7 @@ def cli_generate_user_data_binfile(init_userdata_dir, appname, author, use_base6
 
 def generate_user_data_binfile(init_userdata_dir, appname, author, use_base64=True, clean_zip_file=True, ignore_pattern=None):
     start_time = time()
+    duplicate_check(init_userdata_dir)
     tempdir = TemporaryDirectory()
     tempdir_name = tempdir.name
     ignore_files = []

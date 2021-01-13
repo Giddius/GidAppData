@@ -27,17 +27,17 @@ log.info(glog.imported(__name__))
 # endregion [Logging]
 
 
-class SupportKeeperMetaHelper(type):
+class ParaStorageKeeperMetaHelper(type):
     def __getattr__(cls, name):
-        _out = SupportKeeper.configs.get(name, None)
+        _out = ParaStorageKeeper.configs.get(name, None)
         if _out is None:
-            _out = SupportKeeper.app_info.get(name)
+            _out = ParaStorageKeeper.app_info.get(name)
         if _out is None:
             raise AttributeError
         return _out
 
 
-class SupportKeeper(metaclass=SupportKeeperMetaHelper):
+class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
     # region [ClassAttributes]
 
     is_init = False
