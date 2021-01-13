@@ -11,13 +11,10 @@ description-file = "readme.md"
 requires = [
     "click>=7.1.2",
     "appdirs>=1.4.4",
-    "gidconfig>=0.1.4",
-    "gidlogger>=0.1.3",
+    "gidconfig>=0.1.5",
+    "gidlogger>=0.1.4",
     "python-dotenv>=0.15.0"
-    ]
-
-
-
+]
 
 [tool.flit.scripts]
 appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:cli_generate_user_data_binfile"

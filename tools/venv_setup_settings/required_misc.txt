@@ -10,3 +10,5 @@ jsonpickle
 fuzzywuzzy
 fuzzysearch
 python-Levenshtein
+gidconfig==0.1.5
+gidlogger==0.1.4
