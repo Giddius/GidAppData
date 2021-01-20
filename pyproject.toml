@@ -11,9 +11,10 @@ description-file = "readme.md"
 requires = [
     "click>=7.1.2",
     "appdirs>=1.4.4",
-    "gidconfig>=0.1.5",
-    "gidlogger>=0.1.4",
-    "python-dotenv>=0.15.0"
+    "gidconfig>=0.1.7",
+    "gidlogger>=0.1.7",
+    "python-dotenv>=0.15.0",
+    "checksumdir"
 ]
 
 [tool.flit.scripts]

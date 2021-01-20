@@ -7,7 +7,7 @@ import os
 import sys
 import shutil
 import logging
-from gidappdata.utility.functions import appendwriteit, linereadit, pathmaker, readit, writeit, writejson, loadjson
+from gidappdata.utility.functions import appendwriteit, linereadit, pathmaker, readit, writeit, writejson, loadjson, create_folder
 
 import gidlogger as glog
 
@@ -136,6 +136,14 @@ class AppDataStorager:
             _out = self.files[key]
         elif key in self.folder:
             _out = self.folder[key]
+        else:
+            if '.' in key:
+                create_folder(pathmaker(self.appstorage_folder, 'unfoldered_files'))
+                _out = pathmaker(self.appstorage_folder, 'unfoldered_files', key)
+                log.debug("file '%s' does not exist, providing path to 'unfoldered_files' folder", key)
+            else:
+                log.debug("folder '%s' does not exist, providing path to hypothetical folder in base dir", key)
+                _out = pathmaker(self.appstorage_folder, key)
         return _out
 
     def __str__(self):
