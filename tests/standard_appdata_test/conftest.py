@@ -1,5 +1,5 @@
 import pytest
-from gidappdata import AppDataStorager, SupportKeeper
+from gidappdata import AppDataStorager, ParaStorageKeeper
 import os
 import shutil
 from gidappdata.utility.functions import readit, writeit, writebin, create_folder, writejson, pickleit, pathmaker
@@ -51,8 +51,8 @@ def construction_env():
 @pytest.fixture(scope="session")
 def deployed_supportkeeper(construction_env):
     save_path = pathmaker(os.getenv('APPDATA'), construction_env[0], construction_env[1])
-    SupportKeeper.set_archive_data(bin_archive_data)
-    print(SupportKeeper.get_appdata())
-    yield SupportKeeper.get_appdata(), save_path
+    ParaStorageKeeper.set_archive_data(bin_archive_data)
+    print(ParaStorageKeeper.get_appdata())
+    yield ParaStorageKeeper.get_appdata(), save_path
     shutil.rmtree(os.path.dirname(save_path))
     assert os.path.isdir(os.path.dirname(save_path)) is False

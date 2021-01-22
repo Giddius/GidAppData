@@ -47,6 +47,9 @@ def test_folder_file_access(filled_appdata_storage):
     assert os.path.isfile(filled_appdata_storage['test_dict.json']) is True
     assert loadjson(filled_appdata_storage['test_dict.json']) == {}
 
+    assert filled_appdata_storage['data_subfolder/some_file_not_real.txt'] == "C:/Users/Giddi/AppData/Roaming/test_author/test_app_name/first_folder/data_subfolder/some_file_not_real.txt"
+    assert os.path.isdir(filled_appdata_storage['data_subfolder/some_file_not_real.txt']) is False
+
 
 def test_clear(filled_appdata_storage):
     main_folder = str(filled_appdata_storage).rsplit('/', 2)[0]

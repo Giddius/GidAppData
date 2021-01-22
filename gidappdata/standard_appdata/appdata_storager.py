@@ -131,6 +131,10 @@ class AppDataStorager:
 # region [SpecialMethods]
 
     def __getitem__(self, key):
+        if '/' in pathmaker(key):
+            first_part, *other_parts = pathmaker(key).split('/')
+            if first_part in self.folder:
+                return pathmaker(self.folder[first_part], *other_parts)
         _out = None
         if key in self.files:
             _out = self.files[key]
