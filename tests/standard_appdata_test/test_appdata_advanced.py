@@ -1,8 +1,9 @@
 import pytest
 import os
 import shutil
-from gidappdata import ParaStorageKeeper, AppdataProvider, ConfigHandler
+from gidappdata import ParaStorageKeeper
 from gidappdata.utility import pathmaker, loadjson, writejson, writeit, readit, readbin, linereadit, appendwriteit
+from configparser import ConfigParser
 
 
 def test_appinfo(deployed_supportkeeper):
@@ -17,6 +18,6 @@ def test_config_detection(deployed_supportkeeper):
     configs = ['solid_config', 'user_config', 'db_config']
     for config in configs:
         assert config in ParaStorageKeeper.configs
-    assert isinstance(ParaStorageKeeper.solid_config, ConfigHandler)
-    assert isinstance(ParaStorageKeeper.user_config, ConfigHandler)
-    assert isinstance(ParaStorageKeeper.db_config, ConfigHandler)
+    assert isinstance(ParaStorageKeeper.solid_config, ConfigParser)
+    assert isinstance(ParaStorageKeeper.user_config, ConfigParser)
+    assert isinstance(ParaStorageKeeper.db_config, ConfigParser)

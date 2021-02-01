@@ -1,32 +1,50 @@
 [build-system]
-requires = [ "flit_core >=2,<4",]
 build-backend = "flit_core.buildapi"
+requires = ["flit_core >=2,<4"]
 # region [flit]
 [tool.flit.metadata]
-module = "gidappdata"
 author = "Giddius"
-home-page = "https://github.com/Giddius/GidAppData"
-classifiers = [ "License :: OSI Approved :: MIT License",]
+classifiers = ["License :: OSI Approved :: MIT License"]
 description-file = "readme.md"
-requires = [ "click>=7.1.2", "appdirs>=1.4.4", "gidconfig>=0.1.13", "gidlogger>=0.1.7", "python-dotenv>=0.15.0", "checksumdir",]
+home-page = "https://github.com/Giddius/GidAppData"
+module = "gidappdata"
+requires = [
+    "click>=7.1.2",
+    "appdirs>=1.4.4",
+    "gidlogger>=0.1.7",
+    "python-dotenv>=0.15.0",
+    "checksumdir",
+]
 
 [tool.flit.scripts]
 appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:cli_generate_user_data_binfile"
 appdata_provide = "gidappdata.cli.create_datapack_skeleton:cli"
 
 [tool.flit.sdist]
-exclude = ["tests","tools", "temp",".pydeps","TODO.md",".editorconfig"]
+exclude = ["tests", "tools", "temp", ".pydeps", "TODO.md", ".editorconfig"]
 
 # endregion [flit]
 # region [autopep8]
 [tool.autopep8]
-max-line-length = 250
 ignore = ["E402", "E501"]
+max-line-length = 250
 
 # endregion [autopep8]
 # region [isort]
 [tool.isort]
+balanced_wrapping = true
+ensure_newline_before_comments = true
+group_by_package = true
+import_heading_firstparty = "* Local Imports --------------------------------------------------------------------------------------->"
+import_heading_gid = "* Gid Imports ----------------------------------------------------------------------------------------->"
+import_heading_pyqt = "* PyQt5 Imports --------------------------------------------------------------------------------------->"
+import_heading_stdlib = "* Standard Library Imports ---------------------------------------------------------------------------->"
+import_heading_thirdparty = "* Third Party Imports --------------------------------------------------------------------------------->"
+known_gid = ["gidtools", "gidlogger", "gidqtutils", "gidviewmodels"]
+known_pyqt = ["PyQt5"]
+length_sort = true
 line_length = 200
+lines_after_imports = 1
 sections = [
     "FUTURE",
     "STDLIB",
@@ -36,18 +54,6 @@ sections = [
     "FIRSTPARTY",
     "LOCALFOLDER",
 ]
-known_pyqt = ["PyQt5"]
-known_gid = ["gidtools", "gidlogger", "gidqtutils", "gidviewmodels"]
-import_heading_stdlib = "* Standard Library Imports ---------------------------------------------------------------------------->"
-import_heading_thirdparty = "* Third Party Imports --------------------------------------------------------------------------------->"
-import_heading_firstparty = "* Local Imports --------------------------------------------------------------------------------------->"
-import_heading_pyqt = "* PyQt5 Imports --------------------------------------------------------------------------------------->"
-import_heading_gid = "* Gid Imports ----------------------------------------------------------------------------------------->"
-ensure_newline_before_comments = true
-balanced_wrapping = true
-lines_after_imports = 1
-length_sort = true
-group_by_package = true
 
 # endregion [isort]
 # region [pytest]
@@ -57,16 +63,16 @@ addopts = "-rP -vv --durations=0 --show-capture=all --color=auto --code-highligh
 # endregion [pytest]
 # region [gidvenv]
 [tool.gidvenv.base_venv_settings]
-system_site_packages = false
 clear = true
 symlinks = true
+system_site_packages = false
 with_pip = false
 # prompt=
 upgrade_deps = false
 
 [tool.gidvenv.settings]
-verbose = false
+extra_install_instructions = []
 manipulate_script = true
 pyclean_before = true
-extra_install_instructions = []
+verbose = false
 # endregion [gidvenv]

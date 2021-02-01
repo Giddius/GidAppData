@@ -9,13 +9,15 @@ import os
 import base64
 import logging
 import gidlogger as glog
-from gidconfig.standard import ConfigHandler, SingleAccessConfigHandler
+
+from configparser import ConfigParser
 
 from gidappdata.standard_appdata.appdata_storager import AppDataStorager
 from gidappdata.utility.functions import pathmaker, to_attr_name, filename_to_attr_name, create_folder, create_file, readit, writeit
 from gidappdata.utility.extended_dotenv import find_dotenv_everywhere
 from gidappdata.utility.exceptions import ConstructionEnvDataMissing, DevSettingError
 from gidappdata.cli.pack_and_bin_and_py_data import generate_user_data_binfile
+from gidappdata.utility.bridge_configparser import AdaptedConfigParser
 # endregion [Imports]
 
 
@@ -45,7 +47,7 @@ class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
     configs = {}
     construction_env_filename = 'construction_info.env'
     app_info = {'app_name': None, 'author_name': None, 'uses_base64': None, 'clean': True, 'dev': False, 'redirect': '', 'log_folder': '', "is_unpacked": False}
-    config_handler = ConfigHandler
+    config_handler = AdaptedConfigParser
     archive_data = None
     # endregion[ClassAttributes]
 
@@ -66,13 +68,8 @@ class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
         log.info('unzipping finished')
 
     @classmethod
-    def set_single_access_confighandler(cls):
-        cls.config_handler = SingleAccessConfigHandler
-
-    @classmethod
-    def set_experimental_confighandler(cls):
-        from gidconfig.experimental import GidAttConfigIni
-        cls.config_handler = GidAttConfigIni
+    def set_special_config_handler(cls, handler_class):
+        cls.config_handler = handler_class
 
     @classmethod
     def set_clean(cls, setting: bool):
@@ -151,7 +148,7 @@ class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
             for file in os.scandir(cls.appdata['config']):
                 if file.name.endswith('.ini') and 'config' in file.name:
                     name = filename_to_attr_name(file.name)
-                    cls.configs[name] = ConfigHandler(cls.appdata[file.name])
+                    cls.configs[name] = cls.config_handler.from_defaults(cls.appdata[file.name])
         cls.is_init = True
 
     @classmethod
