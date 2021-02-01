@@ -30,8 +30,8 @@ echo %COVERAGE_REPORT_FOLDER%
 RD /S /Q %COVERAGE_REPORT_FOLDER%
 mkdir %COVERAGE_REPORT_FOLDER%
 
-
-
+echo %WORKSPACEDIR%
+echo %CD%
 rem ECHO standard
 
 rem call pytest --cov=%PROJECT_NAME% .\tests -v
@@ -40,7 +40,7 @@ rem call pytest --cov=%PROJECT_NAME% .\tests -v
 
 ECHO html report
 
-call pytest .\tests -v --cov=%PROJECT_NAME% --cov-report html:"%COVERAGE_REPORT_FOLDER%\%PROJECT_NAME%_coverage_html"
+call pytest %CD%\tests -v --cov=%PROJECT_NAME% --cov-report html:"%COVERAGE_REPORT_FOLDER%\%PROJECT_NAME%_coverage_html"
 
 
 

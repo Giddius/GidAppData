@@ -10,7 +10,20 @@ mkdir %LOG_FOLDER%
 
 pushd %OLDHOME_FOLDER%
 
-call create_venv.cmd 2> "%LOG_FOLDER%\create_venv.errors" | TEE "%LOG_FOLDER%\create_venv.log"
+
+rem ++++++++++++++++++++++++++++++++++++++++++++++++
+rem &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+SET PROJECT_NAME=GIDAPPDATA
+
+rem -------------------------------------------------
+
+SET PROJECT_AUTHOR=GIDDIUS
+
+rem &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+rem ++++++++++++++++++++++++++++++++++++++++++++++++
+
+call create_venv.cmd %PROJECT_NAME% %PROJECT_AUTHOR% 2> "%LOG_FOLDER%\create_venv.errors" | TEE "%LOG_FOLDER%\create_venv.log"
 if %ERRORLEVEL% == 0 (
     @echo off
     echo ErrorLevel is zero
@@ -23,5 +36,7 @@ if %ERRORLEVEL% == 0 (
    echo Running again with combined log to get error location
    echo.
    echo.
-   call create_venv.cmd > "%LOG_FOLDER%\create_venv_overall.log" 2>&1
+   call create_venv.cmd %PROJECT_NAME% %PROJECT_AUTHOR% > "%LOG_FOLDER%\create_venv_overall.log" 2>&1
 )
+
+
