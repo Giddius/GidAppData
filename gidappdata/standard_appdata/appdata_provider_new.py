@@ -9,7 +9,7 @@ import os
 import base64
 import logging
 import gidlogger as glog
-from gidconfig.standard import ConfigHandler
+from gidconfig.standard import ConfigHandler, SingleAccessConfigHandler
 
 from gidappdata.standard_appdata.appdata_storager import AppDataStorager
 from gidappdata.utility.functions import pathmaker, to_attr_name, filename_to_attr_name, create_folder, create_file, readit, writeit
@@ -64,6 +64,10 @@ class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
                     else:
                         log.debug("file '%s' is already existing and overwrite is 'False' so file was not extracted", pathmaker(root_dir, item))
         log.info('unzipping finished')
+
+    @classmethod
+    def set_single_access_confighandler(cls):
+        cls.config_handler = SingleAccessConfigHandler
 
     @classmethod
     def set_experimental_confighandler(cls):

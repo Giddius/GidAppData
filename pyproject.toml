@@ -8,7 +8,7 @@ author = "Giddius"
 home-page = "https://github.com/Giddius/GidAppData"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "readme.md"
-requires = [ "click>=7.1.2", "appdirs>=1.4.4", "gidconfig>=0.1.11", "gidlogger>=0.1.7", "python-dotenv>=0.15.0", "checksumdir",]
+requires = [ "click>=7.1.2", "appdirs>=1.4.4", "gidconfig>=0.1.13", "gidlogger>=0.1.7", "python-dotenv>=0.15.0", "checksumdir",]
 
 [tool.flit.scripts]
 appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:cli_generate_user_data_binfile"
