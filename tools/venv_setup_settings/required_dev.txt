@@ -1,4 +1,3 @@
-https://github.com/pyinstaller/pyinstaller/tarball/develop
 pep517
 nuitka
 memory-profiler

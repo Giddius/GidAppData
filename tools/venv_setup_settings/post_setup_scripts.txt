@@ -1,2 +1,0 @@
-%OLDHOME_FOLDER%create_venv_extra_envvars.py,%OLDHOME_FOLDER% %PROJECT_NAME%
-pyclean ..\

@@ -1,22 +1,34 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = [ "flit_core >=2,<4",]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
 module = "gidappdata"
 author = "Giddius"
 home-page = "https://github.com/Giddius/GidAppData"
-classifiers = ["License :: OSI Approved :: MIT License"]
+classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "readme.md"
-requires = [
-    "click>=7.1.2",
-    "appdirs>=1.4.4",
-    "gidconfig>=0.1.10",
-    "gidlogger>=0.1.7",
-    "python-dotenv>=0.15.0",
-    "checksumdir"
-]
+requires = [ "click>=7.1.2", "appdirs>=1.4.4", "gidconfig>=0.1.11", "gidlogger>=0.1.7", "python-dotenv>=0.15.0", "checksumdir",]
 
 [tool.flit.scripts]
 appdata_binit = "gidappdata.cli.pack_and_bin_and_py_data:cli_generate_user_data_binfile"
 appdata_provide = "gidappdata.cli.create_datapack_skeleton:cli"
+
+[tool.gidvenv.base_venv_settings]
+system_site_packages = false
+clear = true
+symlinks = true
+with_pip = false
+upgrade_deps = false
+
+[tool.gidvenv.settings]
+verbose = false
+manipulate_script = true
+extra_install_instructions = []
+
+[tool.gidvenv.base_venv_settings.prompt]
+system_site_packages = false
+clear = true
+symlinks = true
+with_pip = false
+upgrade_deps = false
