@@ -11,7 +11,7 @@ module = "gidappdata"
 requires = [
     "click>=7.1.2",
     "appdirs>=1.4.4",
-    "gidlogger>=0.1.7",
+    "gidlogger>=0.1.8",
     "python-dotenv>=0.15.0",
     "checksumdir",
 ]
