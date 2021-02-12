@@ -117,6 +117,7 @@ class AppDataStorager:
         return _folder
 
     def clean(self, folder_to_clean: _AppDataFolder):
+        logging.shutdown()
         _to_delete = []
         if folder_to_clean is self.AllFolder:
             _to_delete = self.managed_folder
@@ -126,7 +127,7 @@ class AppDataStorager:
         for _folder in _to_delete:
             _base_folder = self._get_app_base_folder(_folder)
             shutil.rmtree(_base_folder)
-            log.info('deleted appdata folder "%s"', _base_folder)
+            print(f'deleted appdata folder "{_base_folder}"')
 
 # region [SpecialMethods]
 
