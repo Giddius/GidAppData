@@ -78,6 +78,10 @@ class AppDataStorager:
                 _out[_file] = pathmaker(dirname, _file)
         return _out
 
+    @property
+    def accessor_necessary_kwargs(self):
+        return {"app_name": self.app_name, 'author_name': self.author_name, "appstorage_folder": self.appstorage_folder, 'log_folder': self.log_folder}
+
 # endregion[Properties]
 
     def setup_app_storage_base(self):
@@ -129,6 +133,7 @@ class AppDataStorager:
             shutil.rmtree(_base_folder)
             print(f'deleted appdata folder "{_base_folder}"')
 
+
 # region [SpecialMethods]
 
     def __getitem__(self, key):
@@ -158,3 +163,17 @@ class AppDataStorager:
         return f"{self.__class__.__name__}({self.author_name}, {self.app_name}, {str(self.dev)}, {str(self.redirect)})"
 
 # endregion[SpecialMethods]
+
+
+class AppDataAccessor(AppDataStorager):
+
+    def __init__(self, app_name: str, author_name: str, appstorage_folder=None, log_folder=None):
+        self.author_name = author_name
+        self.app_name = app_name
+        self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name,
+                                                                 appname=self.app_name,
+                                                                 roaming=True)) if appstorage_folder is None else pathmaker(appstorage_folder)
+        self.log_folder = pathmaker(appdirs.user_log_dir(appauthor=self.author_name,
+                                                         appname=self.app_name,
+                                                         opinion=True)) if log_folder is None else pathmaker(log_folder)
+        self.managed_folder = []
