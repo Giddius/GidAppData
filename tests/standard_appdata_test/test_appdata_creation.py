@@ -50,12 +50,6 @@ def test_folder_file_access(filled_appdata_storage):
     assert filled_appdata_storage['data_subfolder/some_file_not_real.txt'] == "C:/Users/Giddi/AppData/Roaming/test_author/test_app_name/first_folder/data_subfolder/some_file_not_real.txt"
     assert os.path.isdir(filled_appdata_storage['data_subfolder/some_file_not_real.txt']) is False
 
-    assert filled_appdata_storage['fake_folder'] == "C:/Users/Giddi/AppData/Roaming/test_author/test_app_name/fake_folder"
-    assert os.path.isdir(filled_appdata_storage['fake_folder']) is False
-
-    assert filled_appdata_storage['fake_file.txt'] == "C:/Users/Giddi/AppData/Roaming/test_author/test_app_name/unfoldered_files/fake_file.txt"
-    assert os.path.isdir(filled_appdata_storage['fake_file.txt']) is False
-
 
 def test_clear(filled_appdata_storage):
     main_folder = str(filled_appdata_storage).rsplit('/', 2)[0]

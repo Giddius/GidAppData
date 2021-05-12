@@ -56,6 +56,7 @@ class AppDataStorager:
         self.operating_system = sys.platform
         self.appstorage_folder = None if self.dev is False else self.redirect
         self.log_folder = None if self.dev is False else pathmaker(log_folder, 'logs')
+
         if self.dev is False:
             self.setup_app_storage_base()
 
@@ -80,7 +81,7 @@ class AppDataStorager:
 
     @property
     def accessor_necessary_kwargs(self):
-        return {"app_name": self.app_name, 'author_name': self.author_name, "appstorage_folder": self.appstorage_folder, 'log_folder': self.log_folder}
+        return {"app_name": self.app_name, 'author_name': self.author_name, "dev": self.dev, "appstorage_folder": self.appstorage_folder, 'log_folder': self.log_folder}
 
 # endregion[Properties]
 
@@ -146,14 +147,10 @@ class AppDataStorager:
             _out = self.files[key]
         elif key in self.folder:
             _out = self.folder[key]
-        else:
-            if '.' in key:
-                create_folder(pathmaker(self.appstorage_folder, 'unfoldered_files'))
-                _out = pathmaker(self.appstorage_folder, 'unfoldered_files', key)
-                log.debug("file '%s' does not exist, providing path to 'unfoldered_files' folder", key)
-            else:
-                log.debug("folder '%s' does not exist, providing path to hypothetical folder in base dir", key)
-                _out = pathmaker(self.appstorage_folder, key)
+
+        if _out is None:
+            raise FileNotFoundError(key)
+
         return _out
 
     def __str__(self):
@@ -167,13 +164,20 @@ class AppDataStorager:
 
 class AppDataAccessor(AppDataStorager):
 
-    def __init__(self, app_name: str, author_name: str, appstorage_folder=None, log_folder=None):
-        self.author_name = author_name
-        self.app_name = app_name
-        self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name,
-                                                                 appname=self.app_name,
-                                                                 roaming=True)) if appstorage_folder is None else pathmaker(appstorage_folder)
-        self.log_folder = pathmaker(appdirs.user_log_dir(appauthor=self.author_name,
-                                                         appname=self.app_name,
-                                                         opinion=True)) if log_folder is None else pathmaker(log_folder)
-        self.managed_folder = []
+    # def __init__(self, app_name: str, author_name: str, appstorage_folder=None, log_folder=None):
+    #     self.author_name = author_name
+    #     self.app_name = app_name
+    #     self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name,
+    #                                                              appname=self.app_name,
+    #                                                              roaming=True)) if appstorage_folder is None else pathmaker(appstorage_folder)
+    #     self.log_folder = pathmaker(appdirs.user_log_dir(appauthor=self.author_name,
+    #                                                      appname=self.app_name,
+    #                                                      opinion=True)) if log_folder is None else pathmaker(log_folder)
+    #     self.managed_folder = []
+
+    def setup_app_storage_base(self):
+        self.appstorage_folder = pathmaker(appdirs.user_data_dir(appauthor=self.author_name, appname=self.app_name, roaming=True))
+        self.managed_folder.append(self.appstorage_folder)
+
+        self.log_folder = pathmaker(appdirs.user_log_dir(appauthor=self.author_name, appname=self.app_name, opinion=True))
+        self.managed_folder.append(self.log_folder)
