@@ -166,7 +166,7 @@ class ParaStorageKeeper(metaclass=ParaStorageKeeperMetaHelper):
     @classmethod
     def serialize(cls):
         return {'app_info': cls.app_info | {'is_unpacked': True},
-                'config_handler': {'config_class': cls.config_handler.__class__.__name__,
+                'config_handler': {'config_class': cls.config_handler.__name__,
                                    'default_settings': cls.config_handler.default_settings,
                                    'bool_true_values': list(cls.config_handler.bool_true_values),
                                    'bool_false_values': list(cls.config_handler.bool_false_values)}}
